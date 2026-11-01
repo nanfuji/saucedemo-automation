@@ -1,0 +1,39 @@
+{
+  "name": "saucedemo-automation",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:login": "playwright test tests/login.spec.ts",
+    "test:inventory": "playwright test tests/inventory.spec.ts",
+    "test:cart": "playwright test tests/cart.spec.ts",
+    "test:checkout": "playwright test tests/checkout.spec.ts",
+    "test:confirmation": "playwright test tests/order-confirmation.spec.ts",
+    "test:navigation": "playwright test tests/navigation.spec.ts",
+    "test:ui-validation": "playwright test tests/ui.spec.ts",
+    "test:advanced": "playwright test tests/advanced.spec.ts",
+    "test:module": "playwright test --grep",
+    "report": "playwright show-report",
+    "test:report": "playwright test; playwright show-report",
+    "typecheck": "tsc --noEmit",
+    "install:browsers": "playwright install --with-deps chromium"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "e2e",
+    "qa",
+    "saucedemo",
+    "page-object-model"
+  ],
+  "author": "",
+  "license": "MIT",
+  "description": "End-to-end test automation framework for SauceDemo using Playwright + TypeScript (Page Object Model).",
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "@types/node": "^20.19.43",
+    "typescript": "^5.6.3"
+  }
+}
