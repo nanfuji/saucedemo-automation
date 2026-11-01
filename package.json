@@ -18,7 +18,8 @@
     "report": "playwright show-report",
     "test:report": "playwright test; playwright show-report",
     "typecheck": "tsc --noEmit",
-    "install:browsers": "playwright install --with-deps chromium"
+    "install:browsers": "playwright install --with-deps chromium",
+    "summary": "node scripts/summarize-results.mjs"
   },
   "keywords": [
     "playwright",
