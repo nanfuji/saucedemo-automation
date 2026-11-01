@@ -56,6 +56,11 @@ export class InventoryPage extends BasePage {
     return this.item(productName).getByRole('button', { name: 'Add to cart' });
   }
 
+  /** The Add to cart / Remove toggle (product links are also exposed with role="button"). */
+  cartToggleButton(productName: string): Locator {
+    return this.item(productName).getByRole('button', { name: /^(Add to cart|Remove)$/ });
+  }
+
   removeButton(productName: string): Locator {
     return this.item(productName).getByRole('button', { name: 'Remove' });
   }
