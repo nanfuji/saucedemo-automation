@@ -110,7 +110,7 @@ saucedemo-automation/
 
 ## Latest execution results
 
-Actual results from `npx playwright test --workers=2` against https://www.saucedemo.com (Chromium, Playwright 1.48.2, Node 20, Ubuntu, 2 Nov 2026). An earlier single-worker run of the same suite gave identical results (108/108 as expected, 123.6 s).
+Actual results from `npx playwright test --workers=2` against https://www.saucedemo.com (Chromium, Playwright 1.48.2, Node 20, Ubuntu, 1 Nov 2026). An earlier single-worker run of the same suite gave identical results (108/108 as expected, 123.6 s).
 
 | Metric | Result |
 | --- | --- |
