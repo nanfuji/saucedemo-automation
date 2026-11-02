@@ -13,6 +13,8 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
     ['json', { outputFile: 'test-results/results.json' }],
+    // Consumed by Azure DevOps (PublishTestResults@2) for the Tests tab.
+    ['junit', { outputFile: 'test-results/junit.xml', embedAnnotationsAsProperties: true }],
   ],
   use: {
     baseURL: process.env.BASE_URL ?? 'https://www.saucedemo.com',

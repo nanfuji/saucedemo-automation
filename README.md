@@ -41,9 +41,32 @@ Every run produces:
 
 - **HTML report** in `playwright-report/` – passed / failed / skipped / expected-failure tests, per-test duration, annotations (known defects, observations, performance timings). Open it with `npm run report`.
 - **JSON report** in `test-results/results.json` – consumed by `npm run summary`.
+- **JUnit XML** in `test-results/junit.xml` – published to the Azure DevOps **Tests** tab (see below). Test annotations (known defects, observations, timings) are embedded as properties and failure screenshots/videos/traces as attachments.
 - **Failure artifacts** in `test-results/` – screenshot, video and trace (`npx playwright show-trace <trace.zip>`) are retained for failed tests only.
 
 Generated reports are git-ignored.
+
+## Azure DevOps reporting
+
+`azure-pipelines.yml` runs the suite on Azure Pipelines and publishes the results to Azure DevOps:
+
+- **Tests tab** of each run: pass/fail/skipped counts, pass rate, duration, per-test outcome and error, with failure screenshots, videos and traces attached to the failing test.
+- **Analytics → Test analytics**: pass-rate and duration trends across runs, plus the slowest and most often failing tests.
+- **Artifacts**: the full Playwright HTML report (`playwright-report-<attempt>`) for every run, and `test-results-<attempt>` with the raw failure artifacts when a run fails.
+
+It runs on every push and PR to `main`, and nightly at 02:00 UTC.
+
+### One-time setup
+
+1. Sign in at https://dev.azure.com and create an organization and project (the free tier is enough).
+2. If the project has no Microsoft-hosted parallel job yet, request the free grant at https://aka.ms/azpipelines-parallelism-request (approval usually takes a few business days).
+3. **Pipelines → New pipeline → GitHub (YAML)**, authorize Azure Pipelines for GitHub and pick `nanfuji/saucedemo-automation`.
+4. Choose **Existing Azure Pipelines YAML file**, select `/azure-pipelines.yml` on `main` and click **Run**.
+5. When the run finishes, open it and click the **Tests** tab. The HTML report is under **Related → published artifacts**.
+
+Optional: add a pipeline variable `BASE_URL` to point the suite at another environment.
+
+The 5 `problem_user` tests that are expected to fail are reported as **Passed** in Azure, because Playwright treats an expected failure as a pass. Their `known-defect` annotation is still shown on the test.
 
 ## Project structure
 
@@ -158,6 +181,6 @@ Recorded as `observation` annotations in the report:
 
 - Add Firefox, WebKit and mobile-emulation projects to `playwright.config.ts`.
 - Visual regression with `toHaveScreenshot()` and accessibility scanning with `@axe-core/playwright`.
-- GitHub Actions workflow that runs the suite and publishes the HTML report as an artifact / to GitHub Pages.
+- Run the suite across browsers in parallel Azure jobs and shard large runs (`--shard`).
 - Reuse an authenticated `storageState` for tests that don't target login to shorten execution time.
 - ESLint + Prettier with the Playwright plugin and a pre-commit hook.
