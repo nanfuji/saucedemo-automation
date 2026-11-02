@@ -41,9 +41,31 @@ Every run produces:
 
 - **HTML report** in `playwright-report/` – passed / failed / skipped / expected-failure tests, per-test duration, annotations (known defects, observations, performance timings). Open it with `npm run report`.
 - **JSON report** in `test-results/results.json` – consumed by `npm run summary`.
+- **Allure results** in `allure-results/` – turned into an Allure report (see below).
 - **Failure artifacts** in `test-results/` – screenshot, video and trace (`npx playwright show-trace <trace.zip>`) are retained for failed tests only.
 
 Generated reports are git-ignored.
+
+### Allure report
+
+[Allure Report 3](https://allurereport.org/) (`allure` npm package, no Java needed) gives a dashboard on top of the same run: pass-rate charts, a timeline, tests grouped by module, and each test's steps with its failure screenshot, video and trace.
+
+```bash
+npx playwright test          # writes allure-results/ alongside the HTML report
+npm run allure:generate      # builds allure-report/ from allure-results/
+npm run allure:open          # serves allure-report/ in your browser
+npm run test:allure          # all three in one go
+```
+
+`allure open` starts a local server, because the report doesn't work when opened straight from `file://`.
+
+What the Allure report shows for this framework:
+
+- **Grouping:** tests are grouped by module (Allure *feature*, e.g. "Module 3: Shopping Cart"), under the epic "SauceDemo E2E".
+- **Tags:** module tags (`login`, `cart`, …) come from the test titles. Tests that recorded a known SauceDemo defect, an observation or a performance timing also get the tags `known-defect`, `observation` or `performance`. Filter by them to find these tests.
+- **Expected failures:** the 5 `problem_user` tests marked `test.fail()` count as **passed**, because Playwright treats an expected failure as a pass. They carry the `known-defect` tag.
+- **Details:** the defect summary, observation or timing text is shown as the test's description. The report's metadata panel shows the application URL, browser, Node version and OS.
+- **Config:** report settings are in `allurerc.mjs`. Labels are added by the auto fixture `allureMetadata` in `fixtures/test-fixtures.ts`.
 
 ## Project structure
 
