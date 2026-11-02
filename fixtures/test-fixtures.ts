@@ -1,4 +1,5 @@
 import { test as base, expect } from '@playwright/test';
+import * as allure from 'allure-js-commons';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { ProductDetailsPage } from '../pages/ProductDetailsPage';
@@ -60,6 +61,8 @@ interface PageFixtures {
   shop: ShopFlows;
   /** Logs in as standard_user before the test body runs and returns the inventory page. */
   loggedInInventory: InventoryPage;
+  /** Auto fixture: adds Allure labels (module feature, known-defect tag). */
+  allureMetadata: void;
 }
 
 export const test = base.extend<PageFixtures>({
@@ -73,6 +76,26 @@ export const test = base.extend<PageFixtures>({
   shop: async ({ loginPage, inventoryPage, cartPage, checkoutPage, overviewPage }, use) =>
     use(new ShopFlows(loginPage, inventoryPage, cartPage, checkoutPage, overviewPage)),
   loggedInInventory: async ({ shop }, use) => use(await shop.loginAs(users.standard)),
+  allureMetadata: [
+    async ({}, use, testInfo) => {
+      const moduleTitle = testInfo.titlePath.find((title) => title.startsWith('Module '));
+      if (moduleTitle) {
+        await allure.epic('SauceDemo E2E');
+        await allure.feature(moduleTitle.replace(/(\s+@\w+)+$/, ''));
+      }
+      await use();
+      const notes = testInfo.annotations.filter((annotation) =>
+        ['known-defect', 'observation', 'performance'].includes(annotation.type)
+      );
+      for (const type of new Set(notes.map((note) => note.type))) {
+        await allure.tag(type);
+      }
+      if (notes.length > 0) {
+        await allure.description(notes.map((note) => `- **${note.type}**: ${note.description ?? ''}`).join('\n'));
+      }
+    },
+    { auto: true },
+  ],
 });
 
 export { expect };

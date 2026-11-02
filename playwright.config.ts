@@ -13,6 +13,20 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
     ['json', { outputFile: 'test-results/results.json' }],
+    [
+      'allure-playwright',
+      {
+        resultsDir: 'allure-results',
+        detail: true,
+        suiteTitle: false,
+        environmentInfo: {
+          Application: process.env.BASE_URL ?? 'https://www.saucedemo.com',
+          Browser: 'Chromium',
+          Node: process.version,
+          OS: `${process.platform} ${process.arch}`,
+        },
+      },
+    ],
   ],
   use: {
     baseURL: process.env.BASE_URL ?? 'https://www.saucedemo.com',
